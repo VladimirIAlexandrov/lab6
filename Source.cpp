@@ -17,10 +17,11 @@
 
 
 void BFS1(int** graph);
-
+void DFS(struct Graph* graph, int vertex, int i, int* dist);
 using namespace std;
 int main1(int ** graphM, int size);
 int main2(int** graphM, int size);
+int main4();
 
 
 
@@ -124,6 +125,7 @@ int main() {
     
    main1(graph, max_size);
    main2(graph, max_size);
+   main4();
     return 0;
 }
 
@@ -141,7 +143,23 @@ int DSFD_Recr(int st, int** b, int num_of_elem, int* visited) {
     }
     return 0;
 }
+void DFS(struct Graph* graph, int vertex, int* visited) {
+    struct node* adjList = graph->adjLists[vertex];
+    struct node* temp = adjList;
 
+    graph->visited[vertex] = 1;
+    printf("Visited %d \n", vertex);
+
+    while (temp != NULL) {
+        int connectedVertex = temp->vertex;
+
+        if (graph->visited[connectedVertex] == 0 && visited[connectedVertex] == -1) {
+            visited[connectedVertex] = visited[vertex] + 1;
+            DFS(graph, connectedVertex, visited);
+        }
+        temp = temp->next;
+    }
+}
 
 
 
@@ -371,4 +389,67 @@ void printGraph(struct Graph* graph)
         }
         printf("\n");
     }
+}
+
+int main4()
+{
+    setlocale(LC_ALL, "Rus");
+
+    int versh, * a, i, ver, conect, start;
+    printf("стартовая вершина: ");
+    scanf("%d", &start);
+
+    // a = (int*)malloc(versh * sizeof(int));
+
+    struct Graph* graph = createGraph(5);
+    addEdge(graph, 0, 1);
+    addEdge(graph, 2, 0);
+    addEdge(graph, 0, 3);
+    addEdge(graph, 2, 1);
+    addEdge(graph, 2, 4);
+
+    printGraph(graph);
+
+    int DIST[5];
+
+    for (int i = 0; i < 5; i++) {
+
+        DIST[i] = -1;
+    }
+    cout << "обход в ширину\n";
+
+    DFS(graph, start, 0, DIST);
+
+    for (int i = 0; i < 5; i++) {
+
+        printf("\nрассояние от %d до %d = %d\n", start, DIST[i], i);
+
+
+    }
+
+
+
+
+    return 0;
+}
+
+void DFS(struct Graph* graph, int vertex, int i, int* dist) {
+    struct node* adjList = graph->adjLists[vertex];
+    struct node* temp = adjList;
+
+    graph->visited[vertex] = 1;
+    printf("% d ", vertex);
+    dist[i] = vertex;
+    //i++;
+
+    while (temp != NULL) {
+        int connectedVertex = temp->vertex;
+
+        if (graph->visited[connectedVertex] == 0) {
+            i++;
+            DFS(graph, connectedVertex, i, dist);
+        }
+        temp = temp->next;
+    }
+
 }
